@@ -28,55 +28,38 @@ client.connect()
         const booksCollection = db.collection('Books');
         app.post('/login', async (req, res) => {
             const { username, password } = req.body;
-            console.log(username, password)
             const userAccount = await collection.findOne({ username });
-            console.log(userAccount.username, userAccount.password, userAccount.userrole)
             if (userAccount) {
-                const passwordMatch = password === userAccount.password;
-
-                if (passwordMatch) {
-                    req.session.user = userAccount;
-
-                    if (userAccount.userrole === "student") {
-                        res.redirect('/student');
-                    } else if (userAccount.userrole === "admin") {
-                        res.redirect('/admin');
-                    } else {
-                        res.redirect('/');
-                    }
-                } else {
-                    res.redirect('/');
-                }
-            } else {
+              const passwordMatch = password === userAccount.password;
+              if (passwordMatch) {
+                req.session.user = userAccount;
+                res.redirect('/admin');
+              } else {
                 res.redirect('/');
+              }
+            } else {
+              res.redirect('/');
             }
-        });
+          });
 
         app.get('/', (req, res) => {
             res.render('login');
         });
 
-        app.get('/student', (req, res) => {
-            if (req.session.user && req.session.user.userrole === "student") {
-                res.sendFile('student.html', { root: __dirname + '/public' });
-            } else {
-                res.redirect('/');
-            }
-        });
-
         app.get('/admin', async (req, res) => {
-            if (req.session.user && req.session.user.userrole === "admin") {
-                try {
-                    const books = await booksCollection.find().toArray();
-                    res.render('admin', { books });
-                } catch (error) {
-                    console.error('Error retrieving books:', error);
-                    res.redirect('/');
-                }
-            } else {
+            if (req.session.user) {
+              try {
+                const books = await booksCollection.find().toArray();
+                const user = req.session.user;
+                res.render('admin', { books, user });
+              } catch (error) {
+                console.error('Error retrieving books:', error);
                 res.redirect('/');
+              }
+            } else {
+              res.redirect('/');
             }
-        });
+          });
 
         app.get('/admin/search', async (req, res) => {
             const searchQuery = req.query.search;
@@ -104,7 +87,8 @@ client.connect()
               }
           
               const books = await booksCollection.find(query).toArray();
-              res.render('admin', { books });
+              const user = req.session.user;
+              res.render('admin', { books, user });
             } catch (error) {
               console.error('Error searching books:', error);
               res.redirect('/admin');
@@ -145,8 +129,9 @@ client.connect()
         app.get('/details', async (req, res) => {
             const ISBN = req.query.ISBN;
             const book = await getBookDetails(ISBN);
+            const user = req.session.user;
             if (book) {
-                res.render('booksdetails', { book });
+                res.render('booksdetails', { book,user });
             } else {
                 res.status(404).send('Book not found');
             }

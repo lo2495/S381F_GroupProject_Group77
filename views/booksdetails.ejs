@@ -16,7 +16,7 @@
             align-items: flex-start;
         }
 
-        .product {
+        .book {
             display: flex;
             max-width: 1200px;
             background-color: #fff;
@@ -24,29 +24,29 @@
             box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .product-image {
+        .book-image {
             flex: 0 0 300px;
             padding: 20px;
         }
 
-        .product-image img {
+        .book-image img {
             width: 200px;
             height: 300px;
             object-fit: cover;
         }
 
-        .product-details {
+        .book-details {
             flex: 1;
             padding: 20px;
         }
 
-        .product-title {
+        .book-title {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 10px;
         }
 
-        .product-attribute {
+        .book-attribute {
             margin-bottom: 10px;
         }
 
@@ -148,40 +148,40 @@
 
 <body>
     <div class="container">
-        <div class="product">
-            <div class="product-image">
+        <div class="book">
+            <div class="book-image">
                 <img src="<%= book.image %>" alt="Book Cover">
             </div>
-            <div class="product-details">
-                <h1 class="product-title">
+            <div class="book-details">
+                <h1 class="book-title">
                     <%= book.title %>
                 </h1>
-                <p class="product-attribute"><strong>ISBN:</strong>
+                <p class="book-attribute"><strong>ISBN:</strong>
                     <%= book.ISBN %>
                 </p>
-                <p class="product-attribute"><strong>Author:</strong>
+                <p class="book-attribute"><strong>Author:</strong>
                     <%= book.author %>
                 </p>
-                <p class="product-attribute"><strong>Publication:</strong>
+                <p class="book-attribute"><strong>Publication:</strong>
                     <%= book.publication %>
                 </p>
-                <p class="product-attribute"><strong>Publish Date:</strong>
+                <p class="book-attribute"><strong>Publish Date:</strong>
                     <%= book.publish_date %>
                 </p>
-                <p class="product-attribute"><strong>Genre:</strong>
+                <p class="book-attribute"><strong>Genre:</strong>
                     <%= book.genre %>
                 </p>
-                <p class="product-attribute"><strong>Availability:</strong>
+                <p class="book-attribute"><strong>Availability:</strong>
                     <%= book.availability %>
                 </p>
-                <p class="product-attribute"><strong>Borrower ID:</strong>
+                <p class="book-attribute"><strong>Borrower ID:</strong>
                     <%= book.borrower_id || 'None' %>
                 </p>
-                <p class="product-attribute"><strong>Loan Period:</strong>
+                <p class="book-attribute"><strong>Loan Period:</strong>
                     <%= book.loan_period || 'None' %>
                 </p>
-                <p class="product-attribute"><strong>Abstract:</strong></p>
-                <p class="product-attribute">
+                <p class="book-attribute"><strong>Abstract:</strong></p>
+                <p class="book-attribute">
                     <%= book.abstract %>
                 </p>
                 <button class="edit-button" onclick="openModal()">Edit</button>
