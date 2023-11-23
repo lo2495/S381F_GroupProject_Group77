@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Admin Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .action-buttons button {
+      margin-right: 5px;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 5px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    textarea {
+      padding: 5px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    .add-book-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .add-book-button button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+
+    .add-book-button button:hover {
+      background-color: #45a049;
+    }
+
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 8px;
+    }
+
+    .search-filter {
+      padding: 8px;
+      border: none;
+      border-radius: 3px;
+      font-size: 16px;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 3px;
+      font-size: 16px;
+      margin-right: 8px;
+    }
+
+    .search-button {
+      background-color: #f00;
+      color: #fff;
+      border: none;
+      padding: 8px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .search-icon {
+      font-size: 20px;
+    }
+  </style>
+  <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <h1>Admin Page</h1>
+  <div class="add-book-button">
+    <button onclick="showAddBookDialog()">Add Book</button>
+  </div>
+  <form action="/admin/search" method="GET" class="search-form">
+    <div class="input-container">
+      <select name="filter" class="search-filter">
+        <option value="title">Title</option>
+        <option value="author">Author</option>
+        <option value="ISBN">ISBN</option>
+        <option value="publication">Publication</option>
+        <option value="genre">Genre</option>
+        <option value="availability">Availability</option>
+        <option value="borrower_id">Borrower ID</option>
+        <option value="loan_period">Loan Period</option>
+      </select>
+      <input type="text" name="search" placeholder="Search" class="search-input">
+      <button type="submit" class="search-button">
+        <i class="search-icon fas fa-search"></i>
+      </button>
+    </div>
+  </form>
+  <% if (books && books.length> 0) { %>
+    <table>
+      <tr>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publication</th>
+        <th>Genre</th>
+        <th>Availability</th>
+        <th>Borrower ID</th>
+        <th>Loan Period</th>
+        <th></th>
+      </tr>
+      <% books.forEach(function(book) { %>
+        <tr>
+          <td>
+            <%= book.ISBN %>
+          </td>
+          <td>
+            <%= book.title %>
+          </td>
+          <td>
+            <%= book.author %>
+          </td>
+          <td>
+            <%= book.publication %>
+          </td>
+          <td>
+            <%= book.genre %>
+          </td>
+          <td>
+            <%= book.availability %>
+          </td>
+          <td>
+            <%= book.borrower_id || 'None' %>
+          </td>
+          <td>
+            <%= book.loan_period || 'None' %>
+          </td>
+          <td class="action-buttons">
+            <button onclick="viewDetails('<%= book.ISBN %>')">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button onclick="deleteBook('<%= book.ISBN %>')">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+        <% }); %>
+    </table>
+    <% } else { %>
+      <p>No books found.</p>
+      <% } %>
+        <a href="/logout">Logout</a>
+        <div class="modal" id="addBookModal">
+          <div class="modal-content">
+            <span class="close" onclick="hideAddBookDialog()">&times;</span>
+            <form id="addForm" onsubmit="submitForm(event)">
+              <label for="title">Title:</label>
+              <input type="text" id="title" name="title">
+              <label for="author">Author:</label>
+              <input type="text" id="author" name="author">
+              <label for="publication">Publication:</label>
+              <input type="text" id="publication" name="publication">
+              <label for="publish_date">Publish Date:</label>
+              <input type="date" id="publish_date" name="publish_date">
+              <label for="genre">Genre:</label>
+              <input type="text" id="genre" name="genre">
+              <label for="availability">Availability:</label>
+              <input type="text" id="availability" name="availability">
+              <label for="abstract">Abstract:</label>
+              <textarea id="abstract" name="abstract" rows="6"></textarea>
+              <label for="image">Image Link:</label>
+              <input type="text" id="image" name="image">
+              <button type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+
+        <script>
+          function showAddBookDialog() {
+            document.getElementById("addBookModal").style.display = "block";
+          }
+
+          function viewDetails(ISBN) {
+            window.location.href = `/details?ISBN=${ISBN}`;
+          }
+
+          function deleteBook(ISBN) {
+            fetch(`/books/delete/${ISBN}`, {
+              method: 'POST'
+            })
+              .then(response => {
+                if (response.ok) {
+                  console.log('Book deleted successfully');
+                  location.reload();
+                } else {
+                  console.error('Error deleting book');
+                }
+              })
+              .catch(error => {
+                console.error('Error deleting book:', error);
+              });
+          }
+
+          function submitForm(event) {
+            var title = document.getElementById("title").value;
+            var author = document.getElementById("author").value;
+            var publication = document.getElementById("publication").value;
+            var genre = document.getElementById("genre").value;
+            var availability = document.getElementById("availability").value;
+            var abstract = document.getElementById("abstract").value;
+            var publish_date = document.getElementById("publish_date").value;
+            var image = document.getElementById("image").value;
+            var isbn = "";
+            for (var i = 0; i < 13; i++) {
+              isbn += Math.floor(Math.random() * 10);
+            }
+            var bookData = {
+              title: title,
+              author: author,
+              publication: publication,
+              genre: genre,
+              availability: availability,
+              borrower_id: "",
+              loan_period: "",
+              ISBN: isbn,
+              abstract: abstract,
+              publish_date: publish_date,
+              image: image
+            };
+            fetch('/books/add', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(bookData)
+            })
+              .then(response => {
+                if (response.ok) {
+                  console.log('Book added successfully');
+                  location.reload();
+                } else {
+                  console.error('Error adding book');
+                }
+              })
+              .catch(error => {
+                console.error('Error adding book:', error);
+              });
+          }
+
+          function hideAddBookDialog() {
+            var modal = document.getElementById("addBookModal");
+            modal.style.display = "none";
+          }
+        </script>
+</body>
+
+</html>

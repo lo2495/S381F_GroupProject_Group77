@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin Page</title>
+  </head>
+  <body>
+    <h1>Welcome, Admin!</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Book ID</th>
+          <th>Book Title</th>
+          <th>Author</th>
+          <th>Publication</th>
+          <th>ISBN</th>
+          <th>Genre</th>
+          <th>Availability</th>
+          <th>Borrower ID</th>
+          <th>Loan Period</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% books.forEach((book) => { %>
+          <tr>
+            <td><%= book.book_id %></td>
+            <td><%= book.title %></td>
+            <td><%= book.author %></td>
+            <td><%= book.publication %></td>
+            <td><%= book.isbn %></td>
+            <td><%= book.genre %></td>
+            <td><%= book.availability %></td>
+            <td><%= book.borrower_id %></td>
+            <td><%= book.loan_period %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </body>
+</html>

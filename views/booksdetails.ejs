@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Book Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .product {
+            display: flex;
+            max-width: 1200px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            flex: 0 0 300px;
+            padding: 20px;
+        }
+
+        .product-image img {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+        }
+
+        .product-details {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .product-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .product-attribute {
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .edit-button {
+            padding: 10px 20px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px;
+            border-radius: 5px;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        /* Form styles */
+        #editForm {
+            display: grid;
+            gap: 10px;
+        }
+
+        #editForm label {
+            font-weight: bold;
+        }
+
+        #editForm input[type="text"],
+        #editForm input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #editForm input#abstract {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            height: 150px;
+            /* Updated height */
+        }
+
+        #editForm button[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #editForm button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="product">
+            <div class="product-image">
+                <img src="<%= book.image %>" alt="Book Cover">
+            </div>
+            <div class="product-details">
+                <h1 class="product-title">
+                    <%= book.title %>
+                </h1>
+                <p class="product-attribute"><strong>ISBN:</strong>
+                    <%= book.ISBN %>
+                </p>
+                <p class="product-attribute"><strong>Author:</strong>
+                    <%= book.author %>
+                </p>
+                <p class="product-attribute"><strong>Publication:</strong>
+                    <%= book.publication %>
+                </p>
+                <p class="product-attribute"><strong>Publish Date:</strong>
+                    <%= book.publish_date %>
+                </p>
+                <p class="product-attribute"><strong>Genre:</strong>
+                    <%= book.genre %>
+                </p>
+                <p class="product-attribute"><strong>Availability:</strong>
+                    <%= book.availability %>
+                </p>
+                <p class="product-attribute"><strong>Borrower ID:</strong>
+                    <%= book.borrower_id || 'None' %>
+                </p>
+                <p class="product-attribute"><strong>Loan Period:</strong>
+                    <%= book.loan_period || 'None' %>
+                </p>
+                <p class="product-attribute"><strong>Abstract:</strong></p>
+                <p class="product-attribute">
+                    <%= book.abstract %>
+                </p>
+                <button class="edit-button" onclick="openModal()">Edit</button>
+                <a href="/admin" class="back-link">Back to Admin Page</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Edit Book</h2>
+            <form id="editForm" onsubmit="submitForm(event)">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="<%= book.title %>">
+
+                <label for="author">Author:</label>
+                <input type="text" id="author" name="author" value="<%= book.author %>">
+
+                <label for="publication">Publication:</label>
+                <input type="text" id="publication" name="publication" value="<%= book.publication %>">
+
+                <label for="publish_date">Publish Date:</label>
+                <input type="date" id="publish_date" name="publish_date" value="<%= book.publish_date %>">
+
+                <label for="genre">Genre:</label>
+                <input type="text" id="genre" name="genre" value="<%= book.genre %>">
+
+                <label for="availability">Availability:</label>
+                <input type="text" id="availability" name="availability" value="<%= book.availability %>">
+
+                <label for="abstract">Abstract:</label>
+                <textarea id="abstract" name="abstract" rows="6"><%= book.abstract %></textarea>
+                <label for="image">Image Link:</label>
+                <input type="text" id="image" name="image" value="<%= book.image %>">
+
+                <label for="borrower_id">Borrower ID:</label>
+                <input type="text" id="borrower_id" name="borrower_id" value="<%= book.borrower_id %>">
+
+                <label for="loan_period">Loan Period:</label>
+                <input type="text" id="loan_period" name="loan_period" value="<%= book.loan_period %>">
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var modal = document.getElementById("editModal");
+        var closeButton = document.querySelector(".close-button");
+        const ISBN = "<%= book.ISBN %>";
+        const book_id = "<%= book._id %>";
+
+        function openModal() {
+            modal.style.display = "block";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            const titleInput = document.getElementById("title").value;
+            const authorInput = document.getElementById("author").value;
+            const publicationInput = document.getElementById("publication").value;
+            const publishdateInput = document.getElementById("publish_date").value;
+            const genreInput = document.getElementById("genre").value;
+            const availabilityInput = document.getElementById("availability").value;
+            const abstractInput = document.getElementById("abstract").value;
+            const imageInput = document.getElementById("image").value;
+            const borrowerIDInput = document.getElementById("borrower_id").value;
+            const loanpeiodInput = document.getElementById("loan_period").value;
+            const bookData = {
+                title: titleInput,
+                author: authorInput,
+                publication: publicationInput,
+                genre: genreInput,
+                availability: availabilityInput,
+                borrower_id: borrowerIDInput,
+                loan_period: loanpeiodInput,
+                ISBN: ISBN,
+                abstract: abstractInput,
+                publish_date: publishdateInput,
+                image: imageInput
+            };
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/books/update/" + encodeURIComponent(book_id));
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    console.log("Book updated successfully");
+                    location.reload();
+                } else {
+                    console.error("Failed to update book");
+                }
+            };
+            xhr.onerror = function () {
+                console.error("An error occurred while updating the book");
+            };
+            xhr.send(JSON.stringify(bookData));
+        }
+
+        closeButton.addEventListener("click", closeModal);
+    </script>
+</body>
+
+</html>
